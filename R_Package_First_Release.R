@@ -8,12 +8,15 @@
 # Desc: Getting R Packages updates dates, frequency and initial dates 
 #       of package releases
 #
+# Update:
+#         24.January 2022
 ##########################################################################
 
 
 ### Get Packages Last updates ####
 
 library(rvest)
+#install.packages("rvest")
 library(ggplot2)
 
 url = 'https://cran.r-project.org/web/packages/available_packages_by_date.html'
@@ -30,9 +33,9 @@ dd$Date <- as.Date(dd$Date)
 ### simple graph
 #General view
 ggplot(dd, aes(x=Date))  +
- geom_dotplot(binwidth =12) + 
- labs(x = "Dates", y = "Number of packages updates by Year of last update") +
- scale_x_date(date_breaks= "2 years", date_labels = "%Y/%m", limits = as.Date(c("2005-01-01", "2018-10-10"))) 
+  geom_dotplot(binwidth =12) + 
+  labs(x = "Dates", y = "Number of packages updates by Year of last update") +
+  scale_x_date(date_breaks= "2 years", date_labels = "%Y/%m", limits = as.Date(c("2005-01-01", "2022-01-25"))) 
 
 
 
@@ -89,7 +92,7 @@ cor(dd_ym)[1,2]
 
 #check distribution over months
 dd_ym2010 <- dd_ym %>%
-  filter(PYear > 2010 & PYear < 2018)
+  filter(PYear > 2010 & PYear < 2023)
 
 boxplot(dd_ym2010$nof~dd_ym2010$month_name, main="R Packages update over months", xlab = "Month", ylab="Number of Packages")
 
@@ -146,17 +149,18 @@ finalArchive <- data.frame(rbind(myData, myDataNonArchive2))
 #packages based on first release date
 #ggplot(finalArchive, aes(x=year(finalArchive$firstRelease))) + geom_dotplot(binwidth = 0.007)
 
+
 hist(year(finalArchive$firstRelease),
      main = paste("Histogram of First year of R Package Release")
      ,xlab="Year",ylab="Number of Packages"
      ,col="lightblue", border="Black"
-     ,xlim = c(1995, 2020), las=1, ylim=c(0,3000))
+     ,xlim = c(1995, 2025), las=1, ylim=c(0,10000))
 
 #stats:
 finalArchiveG<- finalArchive %>%
   group_by(year(finalArchive$firstRelease)) %>%
   summarise(
-      nof_packages = n()
-      ,numberOfUpdates = sum(nofUpdates))
+    nof_packages = n()
+    ,numberOfUpdates = sum(nofUpdates))
 
 finalArchiveG
